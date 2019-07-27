@@ -15,7 +15,7 @@ router.post('/picture', (req, res) => {
      ]
      for (let dir of dirs) {
           if (!fs.existsSync(`${__dirname}/../../static/${dir}`)) {
-               fs.mkdirSync(`${__dirname}/../../static/${dir}`)
+               fs.mkdirSync(`${__dirname}/../../static/${dir}`, 0777)
           }
      }
      let userFileDir = dirs[3]
