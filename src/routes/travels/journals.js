@@ -69,4 +69,14 @@ router.post('/:travelId/journals', async (req, res) => {
 
 })
 
+router.get('/journals/:journalId', async (req, res) => {
+     let journal = await models.travelJournal.findOne({
+          _id: mongoose.Types.ObjectId(req.params.journalId)
+     })
+
+     res.json({
+          journal
+     })
+})
+
 module.exports = router
