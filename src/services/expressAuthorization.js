@@ -5,7 +5,11 @@ const injectUser = async (req, res, next) => {
      let userToken = await models.userToken.findOne({
           token,
      })
-     let user = await models.user.findById(userToken.user)
+
+     let user = null
+     if (userToken) {
+          user = await models.user.findById(userToken.user)
+     }
 
      req.authInfo = user
      req.isAuthenticated = () => !!user
