@@ -22,6 +22,14 @@ router.post('/naver', (req, res) => {
                     nickname: `n${id}`,
                })
                await user.save()
+
+               // 가입하면 여행 탭 하나를 만들어준다
+               let travel = new models.travel({
+                    user: user._id,
+                    title: '나의 여행'
+               })
+          
+               await travel.save()
           }
 
           // 동시로그인 방지(기존 토큰을 초기화해준다)

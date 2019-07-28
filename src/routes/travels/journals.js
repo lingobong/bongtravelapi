@@ -7,6 +7,11 @@ const router = express.Router()
 // /travel/:travelId/journal
 
 router.get('/:travelId/journals', async (req, res) => {
+     let travel = await models.travel.findById(mongoose.Types.ObjectId(req.params.travelId))
+     if (travel.user + '' != req.authInfo._id + '') {
+          return res.json({ success: false })
+     }
+     
      let travelJournals = await models.travelJournal.aggregate([
           {
                $match: {
@@ -44,10 +49,24 @@ router.get('/:travelId/journals', async (req, res) => {
 })
 
 router.post('/:travelId/journals', async (req, res) => {
-     // 로그인 만든 후 본인 여행인지 검사하는거넣기
+     let success = () => {
+          res.json({
+               success: true,
+          })
+     }
+     let fail = () => {
+          res.json({
+               success: false,
+          })
+     }
+     let travel = await models.travel.findById(mongoose.Types.ObjectId(req.params.travelId))
+     if (travel.user + '' != req.authInfo._id + '') {
+          return fail()
+     }
+     
      let { inputTab, input } = req.body
      let travels = new models.travelJournal({
-          // user: ,
+          user: req.authInfo._id,
           travel: mongoose.Types.ObjectId(req.params.travelId),
           title: inputTab.title,
           date: new Date(input.date),
@@ -56,16 +75,7 @@ router.post('/:travelId/journals', async (req, res) => {
           longitude: input.myLatLng.lng,
      })
 
-     travels.save().then(() => {
-          res.json({
-               success: true,
-          })
-     }).catch(() => {
-          res.json({
-               success: false,
-          })
-     })
-
+     travels.save().then(success).catch(fail)
 
 })
 
