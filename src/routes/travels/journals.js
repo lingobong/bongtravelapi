@@ -26,13 +26,9 @@ router.get('/:travelId/journals', async (req, res) => {
                },
           },
           {
-               $project: {
-                    _id: 1,
-                    title: 1,
-                    latitude: 1,
-                    longitude: 1,
+               $addFields: {
                     picture: { $arrayElemAt: ['$pictures', 0] }, // pictures가 아니라 대표사진 하나이므로 picture이다
-                    date: 1,
+                    pictures: null,
                },
           }
      ])
@@ -74,6 +70,7 @@ router.post('/:travelId/journals', async (req, res) => {
           pictures: input.pictures,
           latitude: input.myLatLng.lat,
           longitude: input.myLatLng.lng,
+          description: input.description,
      })
 
      travels.save().then(success).catch(fail)
