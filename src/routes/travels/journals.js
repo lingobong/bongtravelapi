@@ -15,6 +15,7 @@ router.get('/:travelId/journals', async (req, res) => {
      let travelJournals = await models.travelJournal.aggregate([
           {
                $match: {
+                    user: req.authInfo._id, //인덱스 사용을 위해 추가
                     travel: mongoose.Types.ObjectId(req.params.travelId)
                }
           },

@@ -10,4 +10,6 @@ const Schema = mongoose.Schema({
      longitude: Number,
 }, { timestamps: true })
 
+Schema.index({ user: 1, travel: 1 })
+
 module.exports = mongoose.model('TravelJournal', Schema)
