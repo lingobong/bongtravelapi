@@ -10,10 +10,12 @@
   "author": "RyuJaeWan <dmg1414@naver.com> (http://github.com/lendland)",
   "license": "ISC",
   "dependencies": {
+    "crypto": "^1.0.1",
     "express": "^4.17.1",
     "md5": "^2.2.1",
     "mongoose": "^5.6.5",
     "multer": "^1.4.2",
+    "node-fetch": "^2.6.0",
     "work-pool": "^1.0.0"
   }
 }
