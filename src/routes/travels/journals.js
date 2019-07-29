@@ -3,6 +3,7 @@ const mongoose = require('mongoose')
 const models = require('../../models')
 
 const router = express.Router()
+const { journalSearch } = require('../../services')
 
 // /travel/:travelId/journal
 
@@ -26,13 +27,8 @@ router.get('/:travelId/journals', async (req, res) => {
                },
           },
           {
-               $project: {
-                    _id: 1,
-                    title: 1,
-                    latitude: 1,
-                    longitude: 1,
-                    picture: { $arrayElemAt: ['$pictures', 0] }, // pictures가 아니라 대표사진 하나이므로 picture이다
-                    date: 1,
+               $addFields: {
+                    picture: { $arrayElemAt: ['$pictures', 0] },
                },
           }
      ])
@@ -51,6 +47,7 @@ router.get('/:travelId/journals', async (req, res) => {
 
 router.post('/:travelId/journals', async (req, res) => {
      let success = () => {
+          journalSearch.journalWrite(journal)
           res.json({
                success: true,
           })
@@ -66,7 +63,7 @@ router.post('/:travelId/journals', async (req, res) => {
      }
      
      let { inputTab, input } = req.body
-     let travels = new models.travelJournal({
+     let journal = new models.travelJournal({
           user: req.authInfo._id,
           travel: mongoose.Types.ObjectId(req.params.travelId),
           title: inputTab.title,
@@ -74,9 +71,10 @@ router.post('/:travelId/journals', async (req, res) => {
           pictures: input.pictures,
           latitude: input.myLatLng.lat,
           longitude: input.myLatLng.lng,
+          description: input.description,
      })
 
-     travels.save().then(success).catch(fail)
+     journal.save().then(success).catch(fail)
 
 })
 
