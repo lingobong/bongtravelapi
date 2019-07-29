@@ -39,9 +39,15 @@ router.get('/latest', async (req, res) => {
 })
 
 router.get('/keywordSearch', async (req, res) => {
-     let { keyword, offset } = req.query
-     
-     let journals = await journalSearch.journalSearch(keyword, +offset)
+     let { keyword, offset, lastKeywords } = req.query
+
+     try {
+          lastKeywords = JSON.parse(lastKeywords || '[]')
+     } catch (e) {
+          lastKeywords = []
+     }
+
+     let journals = await journalSearch.journalSearch(keyword, +offset, lastKeywords)
 
      res.json({
           journals,

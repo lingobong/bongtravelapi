@@ -24,13 +24,21 @@ function journalWrite(journal) {
      })
 }
 
-function journalSearch(keyword, skip) {
+function journalSearch(keyword, skip, lastKeywords) {
      let texts = []
 
      texts.push({
           text: keyword,
           score: 100,
      })
+     try {
+          for (let i = 0; i < lastKeywords.length; i++) {
+               texts.push({
+                    text: lastKeywords[i],
+                    score: 15 - i * 5,
+               })
+          }
+     } catch (e) { }
 
      let postAggregate = (aggregate) => {
           aggregate.push({
