@@ -2,6 +2,7 @@ const express = require('express')
 const router = express.Router()
 const models = require('../../models')
 const mongoose = require('mongoose')
+const { journalSearch } = require('../../services')
 
 router.get('/latest', async (req, res) => {
      let { lastId } = req.query
@@ -34,6 +35,16 @@ router.get('/latest', async (req, res) => {
      let journals = await models.travelJournal.aggregate(aggregate)
      res.json({
           journals
+     })
+})
+
+router.get('/keywordSearch', async (req, res) => {
+     let { keyword, offset } = req.query
+     
+     let journals = await journalSearch.journalSearch(keyword, +offset)
+
+     res.json({
+          journals,
      })
 })
 
