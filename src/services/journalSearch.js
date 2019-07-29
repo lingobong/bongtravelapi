@@ -69,7 +69,31 @@ function journalSearch(keyword, skip, lastKeywords) {
      }).then(rs => rs.map(item => item.journal))
 }
 
+function journalDelete(journal) {
+     return LSM.remove(journal._id)
+}
+
+function journalEdit(journal) {
+     let texts = []
+
+     texts.push({
+          text: journal.title,
+          score: 100,
+     })
+     if (journal.description) {
+          texts.push({
+               text: journal.description,
+               score: 10,
+          })
+     }
+     return LSM.update(journal._id, texts, {
+          journal: journal._id,
+     })
+}
+
 module.exports = {
      journalWrite,
      journalSearch,
+     journalEdit,
+     journalDelete,
 }

@@ -12,7 +12,7 @@ router.get('/:travelId/journals', async (req, res) => {
      if (travel.user + '' != req.authInfo._id + '') {
           return res.json({ success: false })
      }
-     
+
      let travelJournals = await models.travelJournal.aggregate([
           {
                $match: {
@@ -61,7 +61,7 @@ router.post('/:travelId/journals', async (req, res) => {
      if (travel.user + '' != req.authInfo._id + '') {
           return fail()
      }
-     
+
      let { inputTab, input } = req.body
      let journal = new models.travelJournal({
           user: req.authInfo._id,
@@ -75,6 +75,72 @@ router.post('/:travelId/journals', async (req, res) => {
      })
 
      journal.save().then(success).catch(fail)
+
+})
+
+router.put('/journals/:journalId', async (req, res) => {
+     let success = () => {
+          journalSearch.journalEdit(journal)
+          res.json({
+               success: true,
+          })
+     }
+     let fail = () => {
+          res.json({
+               success: false,
+          })
+     }
+
+     let { inputTab, input } = req.body
+     let journal = await models.travelJournal.findOne({
+          _id: mongoose.Types.ObjectId(req.params.journalId),
+          user: req.authInfo._id,
+     })
+     if (!!journal) {
+          journal.title = inputTab.title
+          journal.date = new Date(input.date)
+          journal.pictures = input.pictures
+          journal.latitude = input.myLatLng.lat
+          journal.longitude = input.myLatLng.lng
+          journal.description = input.description
+
+          journal.save().then(success)
+     } else {
+          fail()
+     }
+})
+
+router.get('/journals/:journalId', async (req, res) => {
+     let journal = await models.travelJournal.findOne({
+          _id: mongoose.Types.ObjectId(req.params.journalId)
+     })
+
+     res.json({
+          journal
+     })
+})
+
+router.delete('/journals/:journalId', async (req, res) => {
+     let journal = await models.travelJournal.findOne({
+          _id: mongoose.Types.ObjectId(req.params.journalId)
+     })
+
+     if (journal.user + '' == req.authInfo._id + '') {
+          journalSearch.journalDelete(journal)
+
+          await models.travelJournal.deleteOne({
+               _id: journal._id
+          })
+
+          res.json({
+               success: true,
+          })
+     } else {
+          res.json({
+               success: false,
+          })
+     }
+
 
 })
 
