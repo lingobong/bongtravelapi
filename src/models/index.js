@@ -10,4 +10,7 @@ module.exports = {
 
      // // 여행의 일지, 이동경로
      travelJournal: require('./travelJournal'),
+
+     // // 관광지 DB
+     tourlistAttraction: require('./tourlistAttraction'),
 }
